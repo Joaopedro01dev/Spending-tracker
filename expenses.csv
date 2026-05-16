@@ -1,0 +1,31 @@
+ID,Data,Descricao,Valor,Categoria
+1,03/01/2025,Almoço no restaurante,45.00,Alimentação
+2,05/01/2025,Gasolina,120.00,Transporte
+3,08/01/2025,Supermercado,85.50,Alimentação
+4,10/01/2025,Conta de luz,210.75,Moradia
+5,12/01/2025,Farmácia,35.90,Saúde
+6,15/01/2025,Uber,28.40,Transporte
+7,18/01/2025,Lanche,18.00,Alimentação
+8,20/01/2025,Internet,99.90,Moradia
+9,22/01/2025,Academia,70.00,Saúde
+10,25/01/2025,Cinema,42.00,Outros
+11,02/02/2025,Pizza,55.00,Alimentação
+12,04/02/2025,Ônibus,12.50,Transporte
+13,07/02/2025,Supermercado,130.20,Alimentação
+14,11/02/2025,Aluguel,950.00,Moradia
+15,13/02/2025,Consulta médica,180.00,Saúde
+16,16/02/2025,Café,14.00,Alimentação
+17,18/02/2025,Gasolina,140.00,Transporte
+18,21/02/2025,Streaming,29.90,Outros
+19,24/02/2025,Farmácia,48.75,Saúde
+20,27/02/2025,Presente,90.00,Outros
+21,03/03/2025,Padaria,22.30,Alimentação
+22,06/03/2025,Uber,35.00,Transporte
+23,09/03/2025,Conta de água,80.00,Moradia
+24,12/03/2025,Dentista,250.00,Saúde
+25,15/03/2025,Livro,60.00,Outros
+26,18/03/2025,Restaurante,95.00,Alimentação
+27,21/03/2025,Gasolina,135.00,Transporte
+28,24/03/2025,Internet,99.90,Moradia
+29,27/03/2025,Cinema,50.00,Outros
+30,30/03/2025,Remédios,40.00,Saúde
