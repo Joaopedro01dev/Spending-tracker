@@ -55,6 +55,53 @@ def pedir_data():
         except ValueError:
             click.echo("Data inválida!")
 
+def validar_valor(valor):
+    if valor <= 0:
+        raise click.BadParameter("O valor deve ser positivo!")
+    
+    return valor
+
+def editar_data(data_atual):
+
+    while True:
+
+        nova_data = click.prompt(f"Data atual: {data_atual}. ""Digite a nova data ou pressione Enter para manter", default=data_atual, show_default=False)
+
+        try:
+            datetime.strptime(nova_data, "%d/%m/%Y")
+            return nova_data
+
+        except ValueError:
+            click.echo("Data inválida!")
+
+def editar_valor(valor_atual):
+
+    while True:
+
+        try:
+            novo_valor = click.prompt(f"Valor atual: {valor_atual}. ""Digite o novo valor ou pressione Enter para manter", type=float, default=valor_atual, show_default=False)
+            validar_valor(novo_valor)
+
+            return novo_valor
+
+        except click.BadParameter as erro:
+            click.echo(erro)
+
+def escolher_categoria(default=None):
+
+    click.echo("\nEscolha a categoria:")
+
+    for num, nome in categorias.items():
+        click.echo(f"{num}. {nome}")
+
+    while True:
+
+        categoria_numero = click.prompt("Digite o número correspondente", type=int, default=default)
+
+        if categoria_numero in categorias:
+            return categorias[categoria_numero]
+
+        click.echo("Categoria inválida!")
 #add
 categorias = {
     1: "Alimentação",
@@ -74,19 +121,18 @@ def add():
 
     data = pedir_data()
     descricao = click.prompt("Digite a descrição:")
-    valor = click.prompt("Digite o valor: ", type=float)
+    
+    while(True):
+        try:
+            valor = click.prompt("Digite o valor: ", type=float)
+            validar_valor(valor)
 
-    click.echo("\nEscolha a categoria: ")
-    for num, nome in categorias.items():
-        click.echo(f"{num}. {nome}")
+            break
 
-    categoria_numero = click.prompt("Digite o número correspondente: ", type=int)
+        except click.BadParameter as erro:
+            click.echo(erro)
 
-    while categoria_numero not in categorias:
-        click.echo("Categoria inválida!")
-        categoria_numero = click.prompt("Digite novamente: ", type=int)
-
-    categoria = categorias[categoria_numero]
+    categoria = escolher_categoria()
     novo_id = proximo_id()
 
     with open(ARQUIVO, "a", newline="", encoding="utf-8") as arquivo:
@@ -118,14 +164,10 @@ def edit(id):
             despesa_encontrada = True
 
             click.echo(f"Editando despesa com ID: {id}")
-            nova_data = click.prompt(f"Data atual: {linha[1]}. Digite a nova data (DD/MM/YYYY) ou pressione Enter para manter", default=linha[1])
+            nova_data = editar_data(linha[1])
             nova_descricao = click.prompt(f"Descrição atual: {linha[2]}. Digite a nova descrição ou pressione Enter para manter", default=linha[2])
-            novo_valor = click.prompt(f"Valor atual: {linha[3]}. Digite o novo valor ou pressione Enter para manter", type=float, default=float(linha[3]))
+            novo_valor = editar_valor(float(linha[3]))
             click.echo(f"Categoria atual: {linha[4]}. Escolha uma nova categoria ou pressione Enter para manter:")
-
-            click.echo("\nEscolha a categoria: ")
-            for num, nome in categorias.items():
-                click.echo(f"{num}. {nome}")
 
             categoria_atual = linha[4]
             numero_categoria_atual = None
@@ -134,15 +176,8 @@ def edit(id):
                 if nome == categoria_atual:
                     numero_categoria_atual = num
                     break
-            
 
-            categoria_numero = click.prompt("Digite o número correspondente", type=int, default=numero_categoria_atual)
-
-            while categoria_numero not in categorias:
-                click.echo("Categoria inválida!")
-                categoria_numero = click.prompt("Digite novamente: ", type=int)
-
-            categoria = categorias[categoria_numero]
+            categoria = escolher_categoria(numero_categoria_atual)
 
             lista[i] = [id, nova_data, nova_descricao, novo_valor, categoria]
             break
@@ -243,6 +278,7 @@ def listar(category, month_year):
         console.print("[red]Nenhuma despesa encontrada.[/red]")
         return
 
+    tabela.add_section()
     tabela.add_row("Total", "", "", f"{total:.2f}", "")
     console.print(tabela)
 
@@ -284,15 +320,15 @@ def resume(data_resume):
     data_obj = datetime.strptime(data_resume, "%m/%Y")
     nome_mes = data_obj.strftime("%B/%Y")
 
-    tabela = Table(title=f"Resumo fincanceiro: {nome_mes.capitalize()}")
-    tabela.add_column("Categori", style="cyan")
-    tabela.add_column("Valor", style="green")
-    tabela.add_column("Percentual", style="yellow")
+    tabela = Table(title=f"Resumo financeiro: {nome_mes.capitalize()}")
+    tabela.add_column("Categoria", style="cyan", justify="center")
+    tabela.add_column("Valor (R$)", style="green", justify="center")
+    tabela.add_column("Percentual", style="yellow", justify= "center")
 
     for categoria, valor in gastos_categoria.items():
         percentual = (valor / total_geral) * 100
 
-        tabela.add_row(categoria, f"{valor:.2f}", f"{percentual:.2f}%")
+        tabela.add_row(categoria, f"{valor:.2f}", f"{percentual:.1f}%")
 
     tabela.add_section()
     tabela.add_row(
